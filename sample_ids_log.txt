@@ -1,4 +1,0 @@
-[2025-04-13 10:00:01] [*] Starting network monitor
-[2025-04-13 10:00:02] [+] No unauthorized IPs found.
-[2025-04-13 10:05:14] [!] Unauthorized IPs detected: {'192.168.1.99'}
-[2025-04-13 10:05:15] [+] Sent alert to Arduino: UNAUTHORIZED
