@@ -1,43 +1,37 @@
-# Network IDS – Enterprise-Grade Raspberry Pi + Arduino Intrusion Detection System
+# Network IDS – Raspberry Pi + Arduino Enterprise-Grade Intrusion Detection System
 
-**Real-time intrusion detection using Snort on a Raspberry Pi, with Arduino-powered hardware alerting.**  
-This system monitors network activity, detects suspicious traffic using Snort, and triggers audio/visual alerts via Arduino for real-world response and testing.
-
----
-
-## Features
-
-- **Snort-based deep packet inspection**
-- **Threat categorization via SID mapping** (`sigmap.json`)
-- **Logs alerts to `.log` and `.csv`** (SIEM/ELK friendly)
-- **Hardware alerts via Arduino (buzzer + LED)** with tone-based threat types
-- **Modular and portable design**
-- **Runs on boot with `systemd` service**
-- **Fully documented deployment + wiring + architecture**
+A real-time, lightweight intrusion detection system built for cybersecurity education and lab defense.  
+Combines **Snort** for deep packet inspection and **Arduino** for physical alerts — perfect for Security+, OSCP prep, or DIY SOC projects.
 
 ---
 
-## System Architecture
+## Key Features
 
-```
-           [ Internet ]
-                |
-           [ Router / LAN ]
-                |
-         ┌──────────────────────┐
-         │  Raspberry Pi (IDS)  │
-         │ - Snort + Python     │
-         │ - Log Monitor        │
-         └──────────────────────┘
-                  |
-           USB Serial
-                  |
-         ┌──────────────────────┐
-         │   Arduino Alert Box  │
-         │ - LED + Buzzer       │
-         │ - Future: LCD screen │
-         └──────────────────────┘
-```
+- **Snort-powered** network monitoring (L3/L4 packet inspection)
+- **Python-based log monitor** with threat classification via `sigmap.json`
+- **SIEM-ready logs** (`.log` + `.csv`)
+- **Arduino alert hardware** (LED/buzzer with unique tones)
+- **Systemd support** (runs on boot)
+- **Well-documented** setup and architecture
+
+---
+
+## Documentation
+
+- [System Architecture](Docs/architecture.md)
+- [Deployment Guide](Docs/deployment.md)
+- ![Wiring Diagram](Docs/wiring_diagram.png)
+- ![Demo](Docs/demo.gif)
+
+---
+
+## Use Cases
+
+- Cybersecurity certification labs (Security+, OSCP, CEH)
+- Raspberry Pi hacking/defense projects
+- CTF home setups
+- Physical SOC simulations (alerts you can see and hear)
+- Teaching threat response in classrooms or workshops
 
 ---
 
@@ -47,74 +41,62 @@ This system monitors network activity, detects suspicious traffic using Snort, a
 
 ```bash
 sudo apt update
-sudo apt install python3-pip snort nmap
+sudo apt install snort python3-pip nmap
 pip3 install pyserial
 ```
 
-### 2. Add Custom Snort Rules
+### 2. Configure Snort Rules
 
-Edit `/etc/snort/rules/local.rules` and add:
+Add to `/etc/snort/rules/local.rules`:
 
 ```snort
 alert tcp any any -> any 80 (msg:"Nmap Scan Detected"; flags:S; sid:1000001; rev:1;)
 alert tcp any any -> any 443 (msg:"Exploit Attempt"; sid:1000002; rev:1;)
 ```
 
-Restart Snort after saving.
-
 ### 3. Upload Arduino Code
 
-Upload `arduino/alert_system.ino` using the Arduino IDE. Connect LED to pin 8 and buzzer to pin 9.
+Upload `arduino/alert_system.ino` using Arduino IDE.  
+Wire LED to pin 8 and buzzer to pin 9.
 
-### 4. Enable the Systemd Service
+### 4. Enable Auto-Start
 
 ```bash
 sudo cp system/network-ids.service /etc/systemd/system/
 sudo systemctl daemon-reexec
-sudo systemctl enable network-ids.service
-sudo systemctl start network-ids.service
-```
-
----
-
-## File Structure
-
-```
-network-ids/
-├── arduino/           # Arduino sketch
-├── pi/                # Python monitor, sigmap
-├── logs/              # Sample alert logs
-├── Docs/              # Diagrams, deployment, architecture
-├── system/            # systemd service file
-├── LICENSE            # MIT License
-├── requirements.txt   # Python deps
-└── README.md
+sudo systemctl enable network-ids
+sudo systemctl start network-ids
 ```
 
 ---
 
 ## Alert Types
 
-| Threat Type | Source SID   | Arduino Signal           |
-|-------------|--------------|--------------------------|
-| SCAN        | 1000001      | 2kHz tone (3 sec)        |
-| EXPLOIT     | 1000002      | 3 short 3kHz beeps       |
-| UNAUTHORIZED| Manual (ARP) | 1kHz tone (2 sec)        |
+| Type         | SID        | Arduino Reaction         |
+|--------------|------------|--------------------------|
+| UNAUTHORIZED | N/A        | 1kHz tone (2 sec)        |
+| SCAN         | 1000001    | 2kHz sustained tone      |
+| EXPLOIT      | 1000002    | 3 rapid 3kHz pulses      |
 
 ---
 
-## Real Use Case
+## Directory Structure
 
-This project simulates an active SOC (Security Operations Center) environment in a lab.  
-It’s great for:
-- Cybersecurity certifications (Security+, OSCP)
-- Raspberry Pi projects
-- Teaching network defense
-- CTF setups
-- Home network threat detection
+```
+network-ids-enterprise/
+├── arduino/         # alert_system.ino
+├── pi/              # monitor.py, sigmap.json
+├── Docs/            # architecture.md, deployment.md, diagrams
+├── logs/            # Sample output
+├── system/          # systemd service
+├── LICENSE
+├── README.md
+└── requirements.txt
+```
 
 ---
 
 ## License
 
-This project is licensed under the MIT License. See `LICENSE` for details.
+This project is licensed under the MIT License.  
+See [LICENSE](LICENSE) for details.
