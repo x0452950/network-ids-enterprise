@@ -19,23 +19,31 @@ Detects scans, exploits, and unauthorized activity — then reacts using a buzze
 
 ## Documentation
 
-- **[System Architecture](docs/architecture.md)** – How it works end to end
-- **[Deployment Guide](docs/deployment.md)** – Setup steps + systemd
-- **Wiring Diagram**  
-  ![Wiring Diagram](docs/wiring_diagram.png)
+- **[System Architecture](docs/architecture.md)** – How it works end to end  
+- **[Deployment Guide](docs/deployment.md)** – Setup instructions, Snort + systemd  
 
-- **Live Demo (Alert Simulation)**  
-  ![Demo](docs/demo.gif)
+### Wiring Diagram  
+![Wiring Diagram](docs/wiring_diagram.png)
+
+### Demo  
+![Demo](docs/demo.gif)
 
 ---
 
 ## Quick Start
+
+### 1. Install Snort + Python Tools
 
 ```bash
 sudo apt update
 sudo apt install snort python3-pip nmap
 pip3 install pyserial
 ```
+
+### 2. Upload Arduino Code
+Upload `arduino/alert_system.ino` to your Arduino (use pins 8 for LED, 9 for buzzer).
+
+### 3. Enable Auto-Start (systemd)
 
 ```bash
 sudo cp system/network-ids.service /etc/systemd/system/
@@ -52,7 +60,7 @@ sudo systemctl start network-ids
 network-ids-enterprise/
 ├── arduino/           # alert_system.ino
 ├── pi/                # monitor.py, sigmap.json
-├── docs/              # wiring_diagram.png, architecture.md, demo.gif
+├── docs/              # architecture.md, deployment.md, diagrams
 ├── logs/              # Sample logs
 ├── system/            # systemd service
 ├── LICENSE
@@ -74,10 +82,11 @@ network-ids-enterprise/
 
 ## Use Cases
 
-- Security+ / OSCP / CEH training labs
-- Raspberry Pi cybersecurity project
-- SOC simulation for teaching
-- CTF home environment or DIY firewall test bed
+- Security+ / OSCP / CEH certification labs
+- Raspberry Pi cybersecurity projects
+- SOC simulation and training
+- CTF home environment setup
+- DIY network security appliance
 
 ---
 
